@@ -16,6 +16,7 @@
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
+import pacman
 
 import util
 
@@ -50,6 +51,9 @@ class SearchProblem:
         state, 'action' is the action required to get there, and 'stepCost' is
         the incremental cost of expanding to that successor.
         """
+        action = state.getLegalPacmanActions(state)
+        successor = state.generatePacmanSuccessor(state, action)
+        
         util.raiseNotDefined()
 
     def getCostOfActions(self, actions):
