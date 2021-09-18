@@ -92,6 +92,11 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    open = []
+    closed = []
+    current_state = problem.getStartState()
+    while current_state != problem.isGoalState or len(open) == 0:
+        successors = problem.getSuccessors(current_state)
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
