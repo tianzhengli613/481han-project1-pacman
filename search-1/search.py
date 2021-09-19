@@ -17,6 +17,7 @@ In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
+from sys import _current_frames
 import util
 
 class SearchProblem:
@@ -92,11 +93,49 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    open = []
-    closed = []
+    root_visited = []
+    roots_to_visit = []
+    actions = []
     current_state = problem.getStartState()
-    while current_state != problem.isGoalState or len(open) == 0:
+    
+    successors = problem.getSuccessors(current_state)
+    root_visited.append(current_state)
+    for i in successors:
+        roots_to_visit.append(i)
+        
+    # Start state is the goal state
+    if problem.isGoalState(current_state):
+        return actions # would be empty
+        
+    while len(roots_to_visit) > 0:
+        # block of code to get from previous successor (root_visited[-1]) to the
+        # the first element of roots_to_visit, since they may be far apart 
+        
+        current_successor = roots_to_visit[0]
+        current_state = current_successor[0]
+        current_action = current_successor[1]
+        current_cost = current_successor[2]
+        root_visited.append(current_state)
+        roots_to_visit.remove(current_successor)
+        actions.append(current_action)
+        
+        # Found goal state
+        if problem.isGoalState(current_state):
+            return actions
+            
         successors = problem.getSuccessors(current_state)
+        for i in successors:
+            if i[0] not in root_visited:
+                roots_to_visit.append(i)
+        
+            
+        
+        # root_visited.append(current_state)
+        # successors = problem.getSuccessors(current_state)
+        # while len(successors) > 0:
+        #     first = successors[0]
+        #     successors.remove(first)
+        
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
