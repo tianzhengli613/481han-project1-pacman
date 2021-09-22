@@ -88,6 +88,40 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    open = [problem.getStartState()]
+    closed = []
+    path = []
+
+    # successors = problem.getSuccessors(problem.getStartState())
+    # for tuples in successors:
+    #     open.append(tuples[0])
+    #     #if tuples[0] == open[0]:
+    #     path.append(tuples[1])
+    # print(path)
+
+    while open != []:
+        current_state = open[0]
+        print("Current State is: ", current_state)
+        # Remove leftmost State from open, after defining it as current_state
+        open.pop(0)
+        print("Open Path is: ", open)
+
+        if problem.isGoalState(current_state):
+            return path
+        else:
+            # Generate childen of current_state
+            successors = problem.getSuccessors(current_state)
+            print("Successors are: ", successors)
+            # Add current_state to closed
+            closed.append(current_state)
+            print("Closed path is: ", closed)
+            for tuples in successors:
+                # If children are not in open or closed, add to left end of open
+                if tuples[0] not in closed or open:
+                    open.insert(0, tuples[0])
+                elif tuples[0] == open[0]:
+                    path.append(tuples[1])
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
