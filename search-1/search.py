@@ -129,6 +129,7 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     nodes_visited = []
     nodes_to_visit = []
+    successors_to_visit = []
     actions = []
     
     current_state = problem.getStartState()
@@ -136,11 +137,13 @@ def breadthFirstSearch(problem):
     
     successors = problem.getSuccessors(current_state)
     for i in successors:
-        nodes_to_visit.append(i)
+        successors_to_visit.append(i)
+        nodes_to_visit.append(i[0])
         
-    while len(nodes_to_visit) != 0:
-        current_successor = nodes_to_visit[0]
-        nodes_to_visit.remove(current_successor)
+    while len(successors_to_visit) != 0:
+        current_successor = successors_to_visit[0]
+        successors_to_visit.remove(current_successor)
+        nodes_to_visit.remove(nodes_to_visit[0])
         nodes_visited.append(current_state)
         current_state = current_successor[0]
         current_action = current_successor[1]
@@ -153,7 +156,8 @@ def breadthFirstSearch(problem):
         if len(successors) != 0:
             for i in successors:
                 if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
-                    nodes_to_visit.append(i)
+                    successors_to_visit.append(i)
+                    nodes_to_visit.append(i[0])
                     actions.append(current_action)
         
         
