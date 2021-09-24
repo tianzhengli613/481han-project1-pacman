@@ -127,50 +127,34 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    root_visited = []
-    roots_to_visit = []
+    nodes_visited = []
+    nodes_to_visit = []
     actions = []
     
     current_state = problem.getStartState()
-    successors = problem.getSuccessors(current_state)
-    root_visited.append(current_state)
-    for i in successors:
-        roots_to_visit.append(i)
-        
-    # Start state is the goal state
-    if problem.isGoalState(current_state):
-        return actions # would be empty
+    nodes_visited.append(current_state)
     
-    # While queue is not empty
-    while len(roots_to_visit) > 0:
-        # block of code to get from previous successor (root_visited[-1]) to the
-        # the first element of roots_to_visit, since they may be far apart
-        # prev_root = actions[-1][-1] # last letter (previously visited node)
+    successors = problem.getSuccessors(current_state)
+    for i in successors:
+        nodes_to_visit.append(i)
         
-        
-        current_successor = roots_to_visit[0]
+    while len(nodes_to_visit) != 0:
+        current_successor = nodes_to_visit[0]
+        nodes_to_visit.remove(current_successor)
+        nodes_visited.append(current_state)
         current_state = current_successor[0]
         current_action = current_successor[1]
-        # current_cost = current_successor[2]
         
-        
-        root_visited.append(current_state)
-        roots_to_visit.remove(current_successor)
-        actions.append(current_action)
-        
-        # Found
         if problem.isGoalState(current_state):
+            actions.append(current_action)
             return actions
-        
+            
         successors = problem.getSuccessors(current_state)
-        # if there are no successors
-        if len(successors) == 0:
-            # action is removed but the root stays visited
-            actions.remove(actions[-1])
-        else:
+        if len(successors) != 0:
             for i in successors:
-                if i[0] not in root_visited and i[0] not in roots_to_visit:
-                    roots_to_visit.append(i)
+                if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
+                    nodes_to_visit.append(i)
+                    actions.append(current_action)
         
         
     util.raiseNotDefined()
