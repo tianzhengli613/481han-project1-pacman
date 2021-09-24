@@ -163,9 +163,14 @@ def breadthFirstSearch(problem):
             return actions
         
         successors = problem.getSuccessors(current_state)
-        for i in successors:
-            if i[0] not in root_visited and i[0] not in roots_to_visit:
-                roots_to_visit.append(i)
+        # if there are no successors
+        if len(successors) == 0:
+            # action is removed but the root stays visited
+            actions.remove(actions[-1])
+        else:
+            for i in successors:
+                if i[0] not in root_visited and i[0] not in roots_to_visit:
+                    roots_to_visit.append(i)
         
         
     util.raiseNotDefined()
