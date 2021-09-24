@@ -144,23 +144,27 @@ def breadthFirstSearch(problem):
     # While queue is not empty
     while len(roots_to_visit) > 0:
         # block of code to get from previous successor (root_visited[-1]) to the
-        # the first element of roots_to_visit, since they may be far apart 
+        # the first element of roots_to_visit, since they may be far apart
+        # prev_root = actions[-1][-1] # last letter (previously visited node)
+        
         
         current_successor = roots_to_visit[0]
         current_state = current_successor[0]
         current_action = current_successor[1]
         # current_cost = current_successor[2]
         
+        
         root_visited.append(current_state)
         roots_to_visit.remove(current_successor)
         actions.append(current_action)
         
+        # Found
+        if problem.isGoalState(current_state):
+            return actions
+        
         successors = problem.getSuccessors(current_state)
         for i in successors:
-            if i[0] not in root_visited:
-                if problem.isGoalState(i[0]):
-                    actions.append(i[1])
-                    return actions
+            if i[0] not in root_visited and i[0] not in roots_to_visit:
                 roots_to_visit.append(i)
         
         
