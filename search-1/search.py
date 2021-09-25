@@ -130,25 +130,26 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    current_state = problem.getStartState() # Start state
+    current_state = problem.getStartState()
     
-    nodes_visited = []
-    nodes_visited.append(current_state)     # Start state is already visited
-    nodes_visit_path = []                   # Path has unnecessary elements removed
+    nodes_visited = []                      # Keeps track of nodes that have been visited
+    nodes_visited.append(current_state)
+    nodes_visit_path = []                   # nodes_visited but removes unwanted nodes
     nodes_visit_path.append(current_state)
-    potential_actions = []                  # Contains successors so you have both action and state
+    potential_actions = []                  # Contains successors for potential actions to take
     
     successors_to_visit = []                # Successors of start state to visit
     successors = problem.getSuccessors(current_state)
+    # Get the successors of the start state
     for i in successors:
         successors_to_visit.append(i)
         
     # While not empty
     while successors_to_visit:
+        # Keep track of what we are currently processing
         current_successor = successors_to_visit[0]
         successors_to_visit.remove(current_successor)
         current_state = current_successor[0]
-        # current_action = current_successor[1]
         nodes_visited.append(current_state)
         nodes_visit_path.append(current_state)
         
@@ -160,45 +161,31 @@ def breadthFirstSearch(problem):
             for i in range(len(nodes_visit_path) - 1):
                 a = nodes_visit_path[i]
                 b = nodes_visit_path[i + 1]
-                
                 for j in potential_actions:
-                    # if state is in potential action, then that action is the valid action
+                    # If state is in potential action, then that action is the valid action
                     if j[0] == b:
                         path.append(a)
-                        break
-                
-                # successors = problem.getSuccessors(a)
-                # for j in successors:
-                #     if j[0] == b:
-                #         if j[1] in potential_actions:
-                #             path.append(a)
-                
-                # Goal state is the last element
+                        break  
                 if i == len(nodes_visit_path) - 2:
                     path.append(b)
-            
             actions = []        
             # Filter actions from potential_actions
             for i in range(len(path) - 1):
                 a = path[i]
                 b = path[i + 1]
-                
                 for j in potential_actions:
                     if j[0] == b:
                         actions.append(j[1])
                         break
-                
-                # successors = problem.getSuccessors(a)
-                # for j in successors:
-                #     if j[0] == b:
-                #         actions.append(j[1])
-            
             return actions
         
-        nodes_to_visit = [] # converts successors_to_visit to just the states
+        # Converts successors_to_visit to just the states so that we can check 
+        # if successors are potentially visited 
+        nodes_to_visit = []
         for s in successors_to_visit:
             nodes_to_visit.append(s[0])
         
+        # Process through the successors of the current state
         successors = problem.getSuccessors(current_state)
         remove = []
         for i in successors:
@@ -208,9 +195,9 @@ def breadthFirstSearch(problem):
                 successors_to_visit.append(i)
             else: 
                 remove.append(i)
-        
         for i in remove:
             successors.remove(i)
+            
         # There are no valid successors
         if not successors:
             # Remove last element from the path, it is a deadend
