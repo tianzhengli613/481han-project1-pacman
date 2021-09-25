@@ -88,31 +88,33 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    open = [problem.getStartState()]
-    closed = []
+    start = problem.getStartState()
+    open = []
+    closed = [start]
     path = []
-    # current_paths = []
+    currentpath = []
 
-    # successors = problem.getSuccessors(problem.getStartState())
-    # for tuples in successors:
-    #     open.append(tuples)
-    #     current_paths.append(tuples[1])
+    first_children = problem.getSuccessors(start)
+    for tuples in first_children:
+        open.append(tuples[0])
+        path.append(tuples[1])
 
     while open != []:
         current_state = open[0]
+        currentpath.append(path[0])
         # print("Current State is: ", current_state)
-        # if current_state != problem.getStartState():
-        #     path.append(current_paths[0])
         # Remove leftmost State from open, after defining it as current_state
         open.pop(0)
+        path.pop(0)
         # print("Open Path is: ", open)
 
         if problem.isGoalState(current_state):
-            return path
+            return currentpath
         else:
             # Generate childen of current_state
             successors = problem.getSuccessors(current_state)
             # print("Successors are: ", successors)
+            
             # Add current_state to closed
             closed.append(current_state)
             # print("Closed path is: ", closed)
@@ -120,10 +122,13 @@ def depthFirstSearch(problem):
                 # If children are not in open or closed, add to left end of open
                 if tuples[0] not in closed and tuples[0] not in open:
                     open.insert(0, tuples[0])
-                    path.append(tuples[1])
+                    path.insert(0, tuples[1])
                 # else:
-                #     # If path is a dead end
-                #     path.pop()
+                #     # If path doesnt have children or is a dead end
+                #     currentpath.pop(0)
+            if len(successors) == 0:
+                print(current_state)
+                currentpath.pop(0)
 
     util.raiseNotDefined()
 
