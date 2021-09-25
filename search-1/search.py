@@ -154,54 +154,17 @@ def breadthFirstSearch(problem):
             
         successors = problem.getSuccessors(current_state)
         for i in successors:
-            # If node is not already visited or in queue to be visited
+            # If successor's state is not already visited or in queue to be visited
             if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
                 nodes_to_visit.append(i[0])
                 successors_to_visit.append(i)
+                # None case is for start state
                 if current_action != None:
                     # Prevents duplicate actions
                     if len(actions) != 0 and current_action == actions[-1]:
                         pass
                     else:
                         actions.append(current_action) # when to append action?
-                
-        #     else:
-        #         successors.remove(i)
-        
-        # # Has viable successors
-        # if len(successors) != 0 and current_action != None:
-        #     actions.append(current_action)
-
-            
-        
-                
-        
-    
-    # successors = problem.getSuccessors(current_state)
-    # for i in successors:
-    #     successors_to_visit.append(i)
-    #     nodes_to_visit.append(i[0])
-        
-    # while len(successors_to_visit) != 0:
-    #     current_successor = successors_to_visit[0]
-    #     successors_to_visit.remove(current_successor)
-    #     nodes_to_visit.remove(nodes_to_visit[0])
-    #     nodes_visited.append(current_state)
-    #     current_state = current_successor[0]
-    #     current_action = current_successor[1]
-        
-    #     if problem.isGoalState(current_state):
-    #         actions.append(current_action)
-    #         return actions
-            
-    #     successors = problem.getSuccessors(current_state)
-    #     if len(successors) != 0:
-    #         for i in successors:
-    #             if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
-    #                 successors_to_visit.append(i)
-    #                 nodes_to_visit.append(i[0])
-    #                 actions.append(current_action)
-        
         
     util.raiseNotDefined()
 
