@@ -153,36 +153,41 @@ def breadthFirstSearch(problem):
         if problem.isGoalState(current_state):
             potential_actions.append(current_action)
             
-            return potential_actions # to be removed
+            # print(potential_actions) # to be removed
+            # return potential_actions # to be removed
+            # print(nodes_visit_path)
             
-            # path = []
-            # #  Filter paths from potential paths
-            # for i in range(len(nodes_visit_path)) - 1:
-            #     a = nodes_visit_path[i]
-            #     b = nodes_visit_path[i + 1]
+            path = []
+            #  Filter paths from potential paths
+            for i in range(len(nodes_visit_path) - 1):
+                a = nodes_visit_path[i]
+                b = nodes_visit_path[i + 1]
                 
-            #     successors = problem.getSuccessors(a)
-            #     found = False
-            #     for j in successors:
-            #         if j[0] == b:
-            #             if j[1] in potential_actions:
-            #                 found = True
+                successors = problem.getSuccessors(a)
+                for j in successors:
+                    if j[0] == b:
+                        if j[1] in potential_actions:
+                            path.append(a)
                 
-            #     if found == True:
-            #         path.append(a)
+                # Goal state is the last element
+                if i == len(nodes_visit_path) - 2:
+                    path.append(b)
+                    
             
-            # actions = []        
-            # # Filter actions from potential_actions
-            # for i in range(len(path)) - 1:
-            #     a = path[i]
-            #     b = path[i + 1]
-                
-            #     successors = problem.getSuccessors(a)
-            #     for j in successors:
-            #         if j[0] == b:
-            #             actions.append(j[1])
+            # print(path) # to be removed
             
-            # return actions
+            actions = []        
+            # Filter actions from potential_actions
+            for i in range(len(path) - 1):
+                a = path[i]
+                b = path[i + 1]
+                
+                successors = problem.getSuccessors(a)
+                for j in successors:
+                    if j[0] == b:
+                        actions.append(j[1])
+            
+            return actions
         
         nodes_to_visit = [] # converts successors_to_visit to just the states
         for s in successors_to_visit:
