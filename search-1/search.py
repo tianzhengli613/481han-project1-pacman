@@ -118,14 +118,26 @@ def depthFirstSearch(problem):
             # Add current_state to closed
             closed.append(current_state)
             # print("Closed path is: ", closed)
+            
+            remove = []
+            
             for tuples in successors:
                 # If children are not in open or closed, add to left end of open
                 if tuples[0] not in closed and tuples[0] not in open:
                     open.insert(0, tuples[0])
                     path.insert(0, tuples[1])
-                # else:
+                else:
+                    remove.append(tuples)
+                    # successors.remove(tuples)
+                    # remove.append(tuples)
                 #     # If path doesnt have children or is a dead end
                 #     currentpath.pop(0)
+                
+            for i in successors:
+                if i in remove:
+                    successors.remove(i)
+                
+                
             if len(successors) == 0:
                 print(current_state)
                 currentpath.pop(0)
