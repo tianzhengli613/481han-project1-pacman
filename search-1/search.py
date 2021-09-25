@@ -133,7 +133,7 @@ def breadthFirstSearch(problem):
     nodes_visited.append(current_state)     # Start state is already visited
     nodes_visit_path = []                   # Path has unnecessary elements removed
     nodes_visit_path.append(current_state)
-    potential_actions = []
+    potential_actions = []                  # Contains successors so you have both action and state
     
     successors_to_visit = []                # Successors of start state to visit
     successors = problem.getSuccessors(current_state)
@@ -145,36 +145,34 @@ def breadthFirstSearch(problem):
         current_successor = successors_to_visit[0]
         successors_to_visit.remove(current_successor)
         current_state = current_successor[0]
-        current_action = current_successor[1]
+        # current_action = current_successor[1]
         nodes_visited.append(current_state)
         nodes_visit_path.append(current_state)
         
         # Found
         if problem.isGoalState(current_state):
-            potential_actions.append(current_action)
-            
-            # print(potential_actions) # to be removed
-            # return potential_actions # to be removed
-            # print(nodes_visit_path)
-            
+            potential_actions.append(current_successor) 
             path = []
             #  Filter paths from potential paths
             for i in range(len(nodes_visit_path) - 1):
                 a = nodes_visit_path[i]
                 b = nodes_visit_path[i + 1]
                 
-                successors = problem.getSuccessors(a)
-                for j in successors:
+                for j in potential_actions:
+                    # if state is in potential action, then that action is the valid action
                     if j[0] == b:
-                        if j[1] in potential_actions:
-                            path.append(a)
+                        path.append(a)
+                        break
+                
+                # successors = problem.getSuccessors(a)
+                # for j in successors:
+                #     if j[0] == b:
+                #         if j[1] in potential_actions:
+                #             path.append(a)
                 
                 # Goal state is the last element
                 if i == len(nodes_visit_path) - 2:
                     path.append(b)
-                    
-            
-            # print(path) # to be removed
             
             actions = []        
             # Filter actions from potential_actions
@@ -182,10 +180,15 @@ def breadthFirstSearch(problem):
                 a = path[i]
                 b = path[i + 1]
                 
-                successors = problem.getSuccessors(a)
-                for j in successors:
+                for j in potential_actions:
                     if j[0] == b:
                         actions.append(j[1])
+                        break
+                
+                # successors = problem.getSuccessors(a)
+                # for j in successors:
+                #     if j[0] == b:
+                #         actions.append(j[1])
             
             return actions
         
@@ -198,7 +201,7 @@ def breadthFirstSearch(problem):
         for i in successors:
             # Not been involved yet
             if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
-                potential_actions.append(current_action)
+                potential_actions.append(current_successor)
                 successors_to_visit.append(i)
             else: 
                 remove.append(i)
@@ -209,50 +212,7 @@ def breadthFirstSearch(problem):
         if not successors:
             # Remove last element from the path, it is a deadend
             nodes_visit_path.remove(nodes_visit_path[-1])
-                
-    
-    
-    
-    # nodes_visited = []
-    # nodes_to_visit = []
-    # successors_to_visit = []
-    # actions = []
-    # current_state = problem.getStartState()
-    # current_successor = None
-    # current_action = None # use list to store potential actions and remove them if there are no valid successors
-    
-    # while len(successors_to_visit) != 0 or len(nodes_visited) == 0:
-    #     # Not start state
-    #     if len(nodes_visited) != 0:
-    #         current_state = nodes_to_visit[0]
-    #         current_successor = successors_to_visit[0]
-    #         nodes_to_visit.remove(current_state)
-    #         successors_to_visit.remove(current_successor)
-    #         current_action = current_successor[1]
-        
-    #     nodes_visited.append(current_state)
-        
-        # # Found
-        # if problem.isGoalState(current_state):
-        #     # Start state is not goal state
-        #     if current_action != None:
-        #         actions.append(current_action)
-        #     return actions
-            
-    #     successors = problem.getSuccessors(current_state)
-    #     for i in successors:
-    #         # If successor's state is not already visited or in queue to be visited
-    #         if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
-    #             nodes_to_visit.append(i[0])
-    #             successors_to_visit.append(i)
-    #             # None case is for start state
-    #             if current_action != None:
-    #                 # Prevents duplicate actions
-    #                 if len(actions) != 0 and current_action == actions[-1]:
-    #                     pass
-    #                 else:
-    #                     actions.append(current_action) # when to append action?
-        
+                   
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
