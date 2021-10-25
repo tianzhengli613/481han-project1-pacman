@@ -224,34 +224,38 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     
-    current_state = problem.getStartState()
-    
-    nodes_visited = []                      # Keeps track of nodes that have been visited
-    nodes_visited.append(current_state)
-    nodes_visit_path = []                   # nodes_visited but removes unwanted nodes
-    nodes_visit_path.append(current_state)
+    # stores successors
+    closed = []
+    open = []
+    successors = problem.getSuccessors(problem.getStartState())
+    for s in successors:
+        open.append(s)
     
     actions = []
-    # potential_actions = []                  # Contains successors for potential actions to take
-    
-    successors_to_visit = []                # Successors of start state to visit
-    successors = problem.getSuccessors(current_state)
-    # Get the successors of the start state
-    for i in successors:
-        successors_to_visit.append(i)
-        
+       
     # While not empty
-    while successors_to_visit:
-        # Keep track of what we are currently processing
-        current_successor = successors_to_visit[0]
-        successors_to_visit.remove(current_successor)
-        current_state = current_successor[0]
-        nodes_visited.append(current_state)
-        nodes_visit_path.append(current_state)
+    while open:
+        # state, action, ?
+        current_successor = open[0]
+        open.remove(current_successor)
         
         # Found
-        if problem.isGoalState(current_state):
+        if problem.isGoalState(current_successor[0]):
             return actions
+        
+        # Not explored
+        if current_successor not in closed:
+            # Explore successors
+            successors = problem.getSuccessors(current_successor[0])
+            for s in successors:
+                current_state = s[0]
+                current_action = s[1]
+                
+                # cost of current action
+                cost = problem.getCostOfActions(current_action)
+                
+                # get distance from current state to the final state?
+                
     
     util.raiseNotDefined()
 
