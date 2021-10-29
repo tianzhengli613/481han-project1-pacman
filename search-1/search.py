@@ -224,37 +224,46 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     
-    # stores successors
-    closed = []
-    open = []
+    open = []       # stores successors
+    closed = []     # stores states
+    actions = []
+    
     successors = problem.getSuccessors(problem.getStartState())
     for s in successors:
         open.append(s)
     
-    actions = []
-       
-    # While not empty
     while open:
-        # state, action, ?
-        current_successor = open[0]
-        open.remove(current_successor)
+        lowest_cost_node = None
+        cost = 9999
+        # get lowest cost node
+        for o in open:
+            current_cost = problem.getCostOfActions(o[1])   # cost of action
+            current_cost += heuristic(o[0], problem)        # heuristic of distance
+            if current_cost < cost:
+                lowest_cost_node = o
+                cost = current_cost
+        open.remove(lowest_cost_node)
+        closed.append(lowest_cost_node[0])
         
-        # Found
-        if problem.isGoalState(current_successor[0]):
+        if problem.isGoalState(lowest_cost_node[0]):
             return actions
         
-        # Not explored
-        if current_successor not in closed:
-            # Explore successors
-            successors = problem.getSuccessors(current_successor[0])
-            for s in successors:
-                current_state = s[0]
-                current_action = s[1]
+        successors = problem.getSuccessors(lowest_cost_node[0])
+        for s in successors:
+            if s not in open and s[0] not in closed:
+                open.append(s)
+            else:
+                s_cost = problem.getCostOfActions(s[1])   # cost of action
+                s_cost += heuristic(s[0], problem)        # heuristic of distance
                 
-                # cost of current action
-                cost = problem.getCostOfActions(current_action)
-                
-                # get distance from current state to the final state?
+                for o in open:
+                    if o[0] == s[0]:
+                        o_cost = problem.getCostOfActions(o[1])   # cost of action
+                        o_cost += heuristic(o[0], problem)        # heuristic of distance
+                        
+                        if o_cost > s_cost:
+                            open.remove(o)
+                            open.append(s)
                 
     
     util.raiseNotDefined()
