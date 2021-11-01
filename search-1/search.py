@@ -223,48 +223,42 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    open = util.PriorityQueue()     # stores tuple of states + action
+    open.push((problem.getStartState(), []), nullHeuristic(problem.getStartState(), problem))
+    closed = []                     # stores states
     
-    open = []       # stores successors
-    closed = []     # stores states
-    actions = []
-    
-    successors = problem.getSuccessors(problem.getStartState())
-    for s in successors:
-        open.append(s)
-    
-    while open:
-        lowest_cost_node = None
-        cost = 9999
-        # get lowest cost node
-        for o in open:
-            current_cost = problem.getCostOfActions(o[1])   # cost of action
-            current_cost += heuristic(o[0], problem)        # heuristic of distance
-            if current_cost < cost:
-                lowest_cost_node = o
-                cost = current_cost
-        open.remove(lowest_cost_node)
-        closed.append(lowest_cost_node[0])
+    # while open is not empty
+    while not open.isEmpty():
+        # current node retrieved from priority queue (lowest cost node)
+        current_node = open.pop()
+        current_state = current_node[0]
+        current_action = current_node[1]
         
-        if problem.isGoalState(lowest_cost_node[0]):
-            return actions
+        # found
+        if problem.isGoalState(current_state):
+            return current_action
         
-        successors = problem.getSuccessors(lowest_cost_node[0])
-        for s in successors:
-            if s not in open and s[0] not in closed:
-                open.append(s)
-            else:
-                s_cost = problem.getCostOfActions(s[1])   # cost of action
-                s_cost += heuristic(s[0], problem)        # heuristic of distance
+        # if state has not been explored
+        if current_state not in closed:
+            # then explore successors
+            successors = problem.getSuccessors(current_state)
+            for s in successors:
+                s_state = s[0]
                 
-                for o in open:
-                    if o[0] == s[0]:
-                        o_cost = problem.getCostOfActions(o[1])   # cost of action
-                        o_cost += heuristic(o[0], problem)        # heuristic of distance
-                        
-                        if o_cost > s_cost:
-                            open.remove(o)
-                            open.append(s)
-                
+                # if the successor has not been explored
+                if s_state not in closed:
+                    # get all actions
+                    s_action = s[1]
+                    total_actions = current_action + [s_action]             # all actions including the current one
+                    
+                    # get cost of all actions
+                    total_cost = problem.getCostOfActions(total_actions)    # cost of all actions
+                    total_cost += heuristic(s_state, problem)               # including A* heuristic (distance from current state to final state)
+                    
+                    open.push((s_state, total_actions), total_cost)         # explore later, priority is the total cost
+                    
+        # explored
+        closed.append(current_state)
     
     util.raiseNotDefined()
 
