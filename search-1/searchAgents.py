@@ -295,6 +295,11 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        
+        # state = (position, corners)
+        start_state = (self.startingPosition, self.corners)
+        return start_state
+        
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -302,6 +307,19 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        corners = state[1]
+        length = len(corners)
+        goal_state = None
+        
+        # if no corners it is a goal state
+        if length == 0:
+            goal_state = True
+        else:
+            goal_state = False
+        
+        # boolean 
+        return goal_state
+        
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -325,6 +343,26 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            
+            # (position, corners)
+            currentPosition = state[0]
+            
+            # given
+            x,y = currentPosition
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            
+            # remove the next position
+            corners = list(state[1])
+            if (nextx, nexty) in corners:
+                corners.remove((nextx, nexty))
+            
+            if not hitsWall:
+                # state = (position, corners)
+                s = (((nextx, nexty), tuple(corners)), action, 1)
+                # successor = (state, action, 1)
+                successors.append(s)
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -334,10 +372,12 @@ class CornersProblem(search.SearchProblem):
         Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999.  This is implemented for you.
         """
-        if actions == None: return 999999
+        if actions == None: 
+            return 999999
+        
         x,y= self.startingPosition
-        for action in actions:
-            dx, dy = Actions.directionToVector(action)
+        for a in actions:
+            dx, dy = Actions.directionToVector(a)
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
@@ -360,6 +400,7 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
