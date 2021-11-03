@@ -133,78 +133,96 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    current_state = problem.getStartState()
+    start = problem.getStartState()
+    exploredState = []
+    exploredState.append(start)
+    states = util.Queue()
+    stateTuple = (start, [])
+    states.push(stateTuple)
+    while not states.isEmpty():
+        state, action = states.pop()
+        if problem.isGoalState(state):
+            return action
+        successor = problem.getSuccessors(state)
+        for i in successor:
+            coordinates = i[0]
+            if not coordinates in exploredState:
+                direction = i[1]
+                exploredState.append(coordinates)
+                states.push((coordinates, action + [direction]))
+    return action
+    # current_state = problem.getStartState()
     
-    nodes_visited = []                      # Keeps track of nodes that have been visited
-    nodes_visited.append(current_state)
-    nodes_visit_path = []                   # nodes_visited but removes unwanted nodes
-    nodes_visit_path.append(current_state)
-    potential_actions = []                  # Contains successors for potential actions to take
+    # nodes_visited = []                      # Keeps track of nodes that have been visited
+    # nodes_visited.append(current_state)
+    # nodes_visit_path = []                   # nodes_visited but removes unwanted nodes
+    # nodes_visit_path.append(current_state)
+    # potential_actions = []                  # Contains successors for potential actions to take
     
-    successors_to_visit = []                # Successors of start state to visit
-    successors = problem.getSuccessors(current_state)
-    # Get the successors of the start state
-    for i in successors:
-        successors_to_visit.append(i)
+    # successors_to_visit = []                # Successors of start state to visit
+    # successors = problem.getSuccessors(current_state)
+    # # Get the successors of the start state
+    # for i in successors:
+    #     successors_to_visit.append(i)
         
-    # While not empty
-    while successors_to_visit:
-        # Keep track of what we are currently processing
-        current_successor = successors_to_visit[0]
-        successors_to_visit.remove(current_successor)
-        current_state = current_successor[0]
-        nodes_visited.append(current_state)
-        nodes_visit_path.append(current_state)
+    # # While not empty
+    # while successors_to_visit:
+    #     # Keep track of what we are currently processing
+    #     current_successor = successors_to_visit[0]
+    #     successors_to_visit.remove(current_successor)
+    #     current_state = current_successor[0]
+    #     nodes_visited.append(current_state)
+    #     nodes_visit_path.append(current_state)
         
-        # Found
-        if problem.isGoalState(current_state):
-            potential_actions.append(current_successor) 
-            path = []
-            #  Filter paths from potential paths
-            for i in range(len(nodes_visit_path) - 1):
-                a = nodes_visit_path[i]
-                b = nodes_visit_path[i + 1]
-                for j in potential_actions:
-                    # If state is in potential action, then that action is the valid action
-                    if j[0] == b:
-                        path.append(a)
-                        break  
-                if i == len(nodes_visit_path) - 2:
-                    path.append(b)
-            actions = []        
-            # Filter actions from potential_actions
-            for i in range(len(path) - 1):
-                a = path[i]
-                b = path[i + 1]
-                for j in potential_actions:
-                    if j[0] == b:
-                        actions.append(j[1])
-                        break
-            return actions
+    #     # Found
+    #     if problem.isGoalState(current_state):
+    #         potential_actions.append(current_successor) 
+    #         path = []
+    #         #  Filter paths from potential paths
+    #         for i in range(len(nodes_visit_path) - 1):
+    #             a = nodes_visit_path[i]
+    #             b = nodes_visit_path[i + 1]
+    #             for j in potential_actions:
+    #                 # If state is in potential action, then that action is the valid action
+    #                 if j[0] == b:
+    #                     path.append(a)
+    #                     break  
+    #             if i == len(nodes_visit_path) - 2:
+    #                 path.append(b)
+    #         actions = []        
+    #         # Filter actions from potential_actions
+    #         for i in range(len(path) - 1):
+    #             a = path[i]
+    #             b = path[i + 1]
+    #             for j in potential_actions:
+    #                 if j[0] == b:
+    #                     actions.append(j[1])
+    #                     break
+    #         return actions
         
-        # Converts successors_to_visit to just the states so that we can check 
-        # if successors are potentially visited 
-        nodes_to_visit = []
-        for s in successors_to_visit:
-            nodes_to_visit.append(s[0])
+    #     # Converts successors_to_visit to just the states so that we can check 
+    #     # if successors are potentially visited 
+    #     nodes_to_visit = []
+    #     for s in successors_to_visit:
+    #         nodes_to_visit.append(s[0])
         
-        # Process through the successors of the current state
-        successors = problem.getSuccessors(current_state)
-        remove = []
-        for i in successors:
-            # Not been involved yet
-            if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
-                potential_actions.append(current_successor)
-                successors_to_visit.append(i)
-            else: 
-                remove.append(i)
-        for i in remove:
-            successors.remove(i)
+    #     # Process through the successors of the current state
+    #     successors = problem.getSuccessors(current_state)
+    #     remove = []
+    #     for i in successors:
+    #         # Not been involved yet
+    #         if i[0] not in nodes_visited and i[0] not in nodes_to_visit:
+    #             potential_actions.append(current_successor)
+    #             successors_to_visit.append(i)
+    #         else: 
+    #             remove.append(i)
+    #     for i in remove:
+    #         successors.remove(i)
             
-        # There are no valid successors
-        if not successors:
-            # Remove last element from the path, it is a deadend
-            nodes_visit_path.remove(nodes_visit_path[-1])
+    #     # There are no valid successors
+    #     if not successors:
+    #         # Remove last element from the path, it is a deadend
+    #         nodes_visit_path.remove(nodes_visit_path[-1])
                    
     util.raiseNotDefined()
 
