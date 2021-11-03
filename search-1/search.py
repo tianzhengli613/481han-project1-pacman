@@ -133,27 +133,36 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    start = problem.getStartState()
-    startTuple = (start, [])
-    open = util.Queue()             # States to check
-    closed = []                     # Closed states
-    closed.append(start)
-    open.push(startTuple)
     
-    while not open.isEmpty():       # While there are remaining states
-        node = open.pop()
-        current_state = node[0]      
-        actions = node[1]               # list of actions
-        if problem.isGoalState(current_state):  # Exits when reached goal state
+    open = util.Queue() # States to check
+    closed = []         # Closed states
+    
+    open.push((problem.getStartState(), []))
+    closed.append(problem.getStartState())
+    
+    # While there are remaining states  
+    while not open.isEmpty():       
+        current_node = open.pop()
+        current_state = current_node[0]      
+        actions = current_node[1] 
+        
+        # found
+        if problem.isGoalState(current_state):
             return actions
         
-        successors = problem.getSuccessors(current_state)  # Generate children
+        # generate successors
+        successors = problem.getSuccessors(current_state)
         for s in successors:
             s_state = s[0]
-            if not s_state in closed: # Check if children not checked already
+            # if not already visited
+            if not s_state in closed: 
                 s_action = s[1]
                 closed.append(s_state)
-                open.push((s_state, actions + [s_action]))
+                
+                # push in all actions thus far
+                total_action = actions + [s_action]
+                open.push((s_state, total_action))
+                
     return actions
     
                    
