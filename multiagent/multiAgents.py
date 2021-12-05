@@ -12,6 +12,7 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
+from os import close
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -74,26 +75,58 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        """Calculating distance to the farthest food pellet"""
-        newFoodList = newFood.asList()
-        min_food_distance = -1
-        for food in newFoodList:
-            distance = util.manhattanDistance(newPos, food)
-            if min_food_distance >= distance or min_food_distance == -1:
-                min_food_distance = distance
-
-        """Calculating the distances from pacman to the ghosts. Also, checking for the proximity of the ghosts (at distance of 1) around pacman."""
-        distances_to_ghosts = 1
-        proximity_to_ghosts = 0
-        for ghost_state in successorGameState.getGhostPositions():
-            distance = util.manhattanDistance(newPos, ghost_state)
-            distances_to_ghosts += distance
-            if distance <= 1:
-                proximity_to_ghosts += 1
-
-        """Combination of the above calculated metrics."""
-        return successorGameState.getScore() + (1 / float(min_food_distance)) - (1 / float(distances_to_ghosts)) - proximity_to_ghosts
-        #return successorGameState.getScore()
+        # closest food
+        newFood = newFood.asList()
+        closest_food_distance = 0
+        try:
+            closest_food_distance = util.manhattanDistance(newPos, newFood[0])
+        except:
+            closest_food_distance = 1
+            # print("The size of newFood: " + str(len(newFood)))
+        for i in newFood:
+            temp_distance = util.manhattanDistance(newPos, i)
+            if temp_distance < closest_food_distance:
+                closest_food_distance = temp_distance
+        
+        # times in range of food        
+        in_range_of_food = 0
+        for i in newFood:
+            temp_distance = util.manhattanDistance(newPos, i)
+            if temp_distance <= 1:
+                in_range_of_food += 1
+        
+        # average ghost distances        
+        ghost_positions = successorGameState.getGhostPositions()
+        ghost_distances = []
+        for i in ghost_positions:
+            temp_distance = util.manhattanDistance(newPos, i)
+            ghost_distances.append(temp_distance)
+        average_ghost_distances = sum(ghost_distances) / len(ghost_distances)
+        
+        # times in range of a ghost
+        in_range_of_ghost = 0
+        for i in ghost_positions:
+            temp_distance = util.manhattanDistance(newPos, i)
+            if temp_distance == 1:
+                in_range_of_ghost += 1
+        
+        score = successorGameState.getScore()
+        # score -= closest_food_distance      # minimize food distance
+        # score += average_ghost_distances    # maximize ghost distance
+        try:
+            score += (1 / closest_food_distance)
+        except:
+            pass
+        try:
+            score -= (1 / average_ghost_distances)
+        except:
+            pass
+        score -= in_range_of_ghost          # minimize proximity of ghosts
+        # if in_range_of_ghost > 0:
+        #     score += in_range_of_food           # maximize proximity of food
+        # print(score)
+        return score
+                
 
 def scoreEvaluationFunction(currentGameState):
     """
