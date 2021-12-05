@@ -75,27 +75,20 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        # closest food
+        # heuristic 1: distance to the closest food
         newFood = newFood.asList()
         closest_food_distance = 0
         try:
             closest_food_distance = util.manhattanDistance(newPos, newFood[0])
         except:
+            # pacman is next to the last food, +1 to score
             closest_food_distance = 1
-            # print("The size of newFood: " + str(len(newFood)))
         for i in newFood:
             temp_distance = util.manhattanDistance(newPos, i)
             if temp_distance < closest_food_distance:
                 closest_food_distance = temp_distance
         
-        # times in range of food        
-        in_range_of_food = 0
-        for i in newFood:
-            temp_distance = util.manhattanDistance(newPos, i)
-            if temp_distance <= 1:
-                in_range_of_food += 1
-        
-        # average ghost distances        
+        # heuristic 2: average ghost distances        
         ghost_positions = successorGameState.getGhostPositions()
         ghost_distances = []
         for i in ghost_positions:
@@ -103,28 +96,28 @@ class ReflexAgent(Agent):
             ghost_distances.append(temp_distance)
         average_ghost_distances = sum(ghost_distances) / len(ghost_distances)
         
-        # times in range of a ghost
+        # heuristic 3: times pacman falls in range of a ghost
         in_range_of_ghost = 0
         for i in ghost_positions:
             temp_distance = util.manhattanDistance(newPos, i)
             if temp_distance == 1:
                 in_range_of_ghost += 1
         
+        # final score of 3 heuristics
         score = successorGameState.getScore()
-        # score -= closest_food_distance      # minimize food distance
-        # score += average_ghost_distances    # maximize ghost distance
         try:
+            # minimize food distance
             score += (1 / closest_food_distance)
         except:
+            # ignore if divide by 0
             pass
         try:
+            # maximize ghost distance
             score -= (1 / average_ghost_distances)
         except:
+            # ignore of divide by 0
             pass
-        score -= in_range_of_ghost          # minimize proximity of ghosts
-        # if in_range_of_ghost > 0:
-        #     score += in_range_of_food           # maximize proximity of food
-        # print(score)
+        score -= in_range_of_ghost      # minimize falling in range of ghosts
         return score
                 
 
